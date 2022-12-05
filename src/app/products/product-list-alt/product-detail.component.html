@@ -1,5 +1,4 @@
-<div class="card"
-     *ngIf="product">
+<div class="card" *ngIf="product$ | async as product">
   <div class="card-header">
     {{ pageTitle }}
   </div>
@@ -59,6 +58,6 @@
 </div>
 
 <div class="alert alert-danger"
-     *ngIf="errorMessage">
-  {{ errorMessage }}
+  *ngIf="errorMessage$ | async as errorMessage">
+{{ errorMessage }}
 </div>

@@ -8,6 +8,7 @@ import {
   throwError,
   map,
   combineLatest,
+  BehaviorSubject,
 } from 'rxjs';
 
 import { Product } from './product';
@@ -30,24 +31,40 @@ export class ProductService {
     this.products$,
     this.productCategoryService.productCategories$,
   ]).pipe(
-    map(([products, categories]) =>
-      {
-        return products.map(
-          (product) => ({
+    map(([products, categories]) => {
+      return products.map(
+        (product) =>
+          ({
             ...product,
             price: product.price ? product.price * 1.5 : 0,
             category: categories.find((c) => product.categoryId === c.id)?.name,
             searchKey: [product.productName],
           } as Product)
-        );
-      }
-    )
+      );
+    })
+  );
+
+  private productSelectedSubject = new BehaviorSubject<number>(0);
+  productSelectedAction$ = this.productSelectedSubject.asObservable();
+
+  selectedProduct$ = combineLatest([
+    this.productsWithCategory$,
+    this.productSelectedAction$,
+  ]).pipe(
+    map(([products, selectedProductId]) =>
+      products.find((product) => product.id === selectedProductId)
+    ),
+    tap((product) => console.log('selectedProduct', product))
   );
 
   constructor(
     private http: HttpClient,
     private productCategoryService: ProductCategoryService
   ) {}
+
+  selectedProductChanged(selectedProductId: number): void {
+    this.productSelectedSubject.next(selectedProductId);
+  }
 
   private fakeProduct(): Product {
     return {
