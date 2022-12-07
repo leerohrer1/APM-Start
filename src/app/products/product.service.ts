@@ -12,6 +12,7 @@ import {
   Subject,
   merge,
   scan,
+  shareReplay,
 } from 'rxjs';
 
 import { Product } from './product';
@@ -44,7 +45,8 @@ export class ProductService {
             searchKey: [product.productName],
           } as Product)
       );
-    })
+    }),
+    shareReplay(1)
   );
 
   private productSelectedSubject = new BehaviorSubject<number>(0);
@@ -57,7 +59,8 @@ export class ProductService {
     map(([products, selectedProductId]) =>
       products.find((product) => product.id === selectedProductId)
     ),
-    tap((product) => console.log('selectedProduct', product))
+    tap((product) => console.log('selectedProduct', product)),
+    shareReplay(1)
   );
 
   private productInsertedSubject = new Subject<Product>();
