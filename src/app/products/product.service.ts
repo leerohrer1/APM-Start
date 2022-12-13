@@ -16,8 +16,8 @@ import {
 } from 'rxjs';
 
 import { Product } from './product';
-import { ProductData } from './product-data';
 import { ProductCategoryService } from '../product-categories/product-category.service';
+import { SupplierService } from '../suppliers/supplier.service';
 
 @Injectable({
   providedIn: 'root',
@@ -78,7 +78,8 @@ export class ProductService {
 
   constructor(
     private http: HttpClient,
-    private productCategoryService: ProductCategoryService
+    private productCategoryService: ProductCategoryService,
+    private supplierService: SupplierService
   ) {}
 
     addProduct(newProduct?: Product) {
